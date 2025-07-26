@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Product, Order, OrderItem
+from .models import Client, Product, Order, OrderItem, Contact
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
@@ -21,3 +21,8 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     list_filter = ('created_at',)
     search_fields = ('client__name',)
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ('user', 'client')
+    search_fields = ('user__username', 'client__name')

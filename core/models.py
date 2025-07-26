@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Client(models.Model):
     name = models.CharField(max_length=100)
@@ -7,6 +8,13 @@ class Client(models.Model):
 
     def __str__(self):
         return self.name
+
+class Contact(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='contacts')
+
+    def __str__(self):
+        return f"{self.user.username} ({self.client.name})"
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -17,8 +25,9 @@ class Product(models.Model):
         return self.name
 
 class Order(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='orders')
     created_at = models.DateTimeField(auto_now_add=True)
+    contact_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"Encomenda #{self.id} - {self.client.name}"
